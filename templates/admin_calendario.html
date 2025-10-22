@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Gerenciar Feriados{% endblock %}
+
+{% block content %}
+    <h1>Gerenciar Feriados</h1>
+    
+    <h2>Cadastrar Novo Feriado</h2>
+    <form method="POST">
+        <label for="data_feriado">Data:</label>
+        <input type="date" id="data_feriado" name="data_feriado" required>
+
+        <label for="nome_feriado">Nome do Feriado:</label>
+        <input type="text" id="nome_feriado" name="nome_feriado" required>
+
+        <button type="submit">Salvar Feriado</button>
+    </form>
+    
+    <hr style="margin: 30px 0;">
+
+    <h2>Feriados Cadastrados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Nome</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feriado in feriados %}
+            <tr>
+                <td>{{ feriado.data.strftime('%d/%m/%Y') }}</td>
+                <td>{{ feriado.nome }}</td>
+                <td>
+                    <form action="{{ url_for('delete_feriado', id=feriado.id) }}" method="POST" style="margin:0;">
+                        <button type="submit" onclick="return confirm('Tem certeza que deseja deletar este feriado?');" 
+                                style="background-color: #dc3545;">Deletar</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">Nenhum feriado cadastrado ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

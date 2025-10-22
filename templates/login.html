@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - App Interno ASP</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <style>
+        /* Estilos do Dark Mode (copiados do base.html) */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            background-color: #111; 
+            color: #f0f0f0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px; 
+            background-color: #222; 
+            border-radius: 8px; 
+            border: 1px solid #444; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .login-logo {
+            max-width: 200px;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+        form label { 
+            display: block; 
+            margin-top: 10px; 
+            font-weight: bold; 
+            color: #f0f0f0; 
+        }
+        form input[type="text"], 
+        form input[type="password"] { 
+            width: 95%; 
+            padding: 10px; 
+            margin-top: 5px; 
+            border: 1px solid #555; 
+            border-radius: 4px; 
+            background-color: #333; 
+            color: #f0f0f0; 
+        }
+        form button { 
+            background-color: #FF0000; 
+            color: white; 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            width: 100%; /* Botão largo */
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease; 
+        }
+        form button:hover {
+            background-color: #CC0000; 
+        }
+        
+        /* Mensagens Flash (Erro/Sucesso) */
+        .flash { 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 4px; 
+            text-align: center;
+        }
+        .flash.success { 
+            background-color: #155724; 
+            color: #d4edda; 
+            border: 1px solid #2a9d8f; 
+        }
+        .flash.danger { 
+            background-color: #721c24; 
+            color: #f8d7da; 
+            border: 1px solid #f5c6cb; 
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="{{ url_for('static', filename='img/logo_asp.png') }}" alt="Logo ASP Autopeças" class="login-logo">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <label for="username">Usuário:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

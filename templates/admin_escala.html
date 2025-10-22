@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Escala de Limpeza{% endblock %}
+
+{% block content %}
+    <h1>Gerenciar Escala de Limpeza</h1>
+    
+    <h2>Nova Escala</h2>
+    <form method="POST">
+        <label for="data_escala">Data:</label>
+        <input type="date" id="data_escala" name="data_escala" required>
+
+        <label for="funcionario_escritorio">Setor Escritório:</label>
+        <select id="funcionario_escritorio" name="funcionario_escritorio" required>
+            <option value="">-- Selecione --</option>
+            {% for func in funcs_escritorio %}
+                <option value="{{ func.id }}">{{ func.nome }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="funcionario_expedicao">Setor Expedição:</label>
+        <select id="funcionario_expedicao" name="funcionario_expedicao" required>
+            <option value="">-- Selecione --</option>
+            {% for func in funcs_expedicao %}
+                <option value="{{ func.id }}">{{ func.nome }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Salvar Escala</button>
+    </form>
+    
+    <hr style="margin: 30px 0; border-color: #444;">
+
+    <h2>Escalas Cadastradas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Escritório</th>
+                <th>Expedição</th>
+                <th>Ação</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for escala in escalas %}
+            <tr>
+                <td>{{ escala.data_escala.strftime('%d/%m/%Y') }}</td>
+                <td>{{ escala.funcionario_escritorio.nome }}</td>
+                <td>{{ escala.funcionario_expedicao.nome }}</td>
+                
+                <td>
+                    <form action="{{ url_for('delete_escala', id=escala.id) }}" method="POST" class="delete-form">
+                        
+                        <button type="submit" class="delete"
+                                onclick="return confirm(`Tem certeza que deseja deletar a escala do dia {{ escala.data_escala.strftime('%d/%m/%Y') }}?`);">
+                            Deletar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">Nenhuma escala cadastrada ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

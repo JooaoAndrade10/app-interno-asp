@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Gerenciar Avisos{% endblock %}
+
+{% block content %}
+    <h1>Gerenciar Avisos</h1>
+    
+    <h2>Postar Novo Aviso</h2>
+    <form method="POST">
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo" required>
+
+        <label for="conteudo">Conteúdo:</label>
+        <textarea id="conteudo" name="conteudo" rows="10" required></textarea>
+
+        <button type="submit">Postar Aviso</button>
+    </form>
+
+    <hr style="margin: 30px 0; border-color: #444;">
+
+    <h2>Avisos Postados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Título</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aviso in avisos %}
+            <tr>
+                <td>{{ aviso.data_postagem.strftime('%d/%m/%Y') }}</td>
+                <td>{{ aviso.titulo }}</td>
+                <td>
+                    <form action="{{ url_for('delete_aviso', id=aviso.id) }}" method="POST" class="delete-form">
+                        <button type="submit" class="delete"
+                                onclick="return confirm('Tem certeza que deseja deletar este aviso?');">
+                            Deletar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">Nenhum aviso postado ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+{% endblock %}

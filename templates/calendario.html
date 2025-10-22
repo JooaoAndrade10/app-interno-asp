@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Calendário da Empresa{% endblock %}
+
+{% block content %}
+    
+    <div class="calendar-nav">
+        <a href="{{ nav.anterior }}">&lt; Anterior</a>
+        <h1>{{ nome_mes }} de {{ ano }}</h1>
+        <a href="{{ nav.proximo }}">Próximo &gt;</a>
+    </div>
+    <div class="calendar-nav-current">
+        <a href="{{ nav.hoje }}">Ir para o mês atual</a>
+    </div>
+
+    <table class="calendar-table">
+        <thead>
+            <tr>
+                <th>Seg</th>
+                <th>Ter</th>
+                <th>Qua</th>
+                <th>Qui</th>
+                <th>Sex</th>
+                <th>Sab</th>
+                <th>Dom</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for semana in calendar_matrix %}
+            <tr>
+                {% for dia in semana %}
+                
+                {% if dia == 0 %}
+                    <td class="calendar-day blank"></td>
+                {% else %}
+                    {% set classe_hoje = "" %}
+                    {% if hoje.day == dia and hoje.month == mes and hoje.year == ano %}
+                        {% set classe_hoje = "hoje" %}
+                    {% endif %}
+
+                    <td class="calendar-day {{ classe_hoje }}">
+                        <div class="day-number">{{ dia }}</div>
+
+                        {% if dia in feriados %}
+                            <span class="event feriado">{{ feriados[dia] }}</span>
+                        {% endif %}
+
+                        {% if dia in aniversarios %}
+                            {% for nome in aniversarios[dia] %}
+                                <span class="event aniversario">Aniv: {{ nome }}</span>
+                            {% endfor %}
+                        {% endif %}
+
+                    </td>
+                {% endif %}
+                {% endfor %} 
+            </tr>
+            {% endfor %} 
+        </tbody>
+    </table>
+
+{% endblock %}

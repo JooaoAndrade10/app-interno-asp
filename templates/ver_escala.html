@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Escala de Limpeza{% endblock %}
+
+{% block content %}
+    <h1>Escala de Limpeza</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Escritório</th>
+                <th>Expedição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for escala in escalas %}
+            <tr>
+                <td>{{ escala.data_escala.strftime('%d/%m/%Y') }}</td>
+                <td>{{ escala.funcionario_escritorio.nome }}</td>
+                <td>{{ escala.funcionario_expedicao.nome }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">Nenhuma escala cadastrada ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

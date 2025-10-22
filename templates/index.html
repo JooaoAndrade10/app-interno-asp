@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Quadro de Avisos{% endblock %}
+
+{% block content %}
+
+    {% if aniversariantes_hoje %}
+        <div class="birthday-box">
+            <h2>🎉 Parabéns ao(s) Aniversariante(s) do Dia! 🎉</h2>
+            {% for func in aniversariantes_hoje %}
+                <p>Feliz aniversário, <strong>{{ func.nome }}</strong>!</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <h1>Quadro de Avisos</h1>
+    
+    {% if avisos %}
+        {% for aviso in avisos %}
+            <div class="aviso">
+                <h2>{{ aviso.titulo }}</h2>
+                <small>Postado em: {{ aviso.data_postagem.strftime('%d/%m/%Y às %H:%M') }}</small>
+                <hr style="border-color: #444;"> <p>{{ aviso.conteudo }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nenhum aviso postado ainda.</p>
+    {% endif %}
+{% endblock %}

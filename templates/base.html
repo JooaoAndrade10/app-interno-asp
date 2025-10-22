@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}App Interno ASP{% endblock %}</title>
+    
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#FF0000"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ======================================================= */
+        /* --- TEMA CLARO (LIGHT MODE) ---                         */
+        /* ======================================================= */
+        body { 
+            font-family: "Orbitron", sans-serif; 
+            margin: 0; 
+            background-color: #f4f4f4; /* Fundo geral claro */
+            color: #333; /* Texto padrão escuro */
+            line-height: 1.5; 
+        }
+        .container { 
+            max-width: 800px; margin: 20px auto; padding: 20px; 
+            background-color: #fff; /* Fundo do conteúdo branco */
+            border-radius: 8px; 
+            border: 1px solid #ddd; /* Borda clara */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra mais sutil */
+        }
+        .container h1 { color: #333; /* Texto escuro */ }
+        .container a {
+            color: #333; /* Link escuro */
+            text-decoration: none; font-weight: bold; transition: color 0.3s ease;
+        }
+        .container a:hover { color: #FF0000; text-decoration: underline; }
+
+        /* --- HEADER (Branco - Sem mudança) --- */
+        header {
+            background-color: #FFFFFF; padding: 10px 20px; text-align: center; border-bottom: 1px solid #eee; 
+        }
+        header .logo { max-width: 150px; height: auto; display: block; margin: 0 auto; }
+        
+        /* --- NAV (MENU - Branco) --- */
+        nav { 
+            background-color: #FFFFFF; /* Fundo branco */
+            padding: 10px 20px; display: flex; 
+            justify-content: center; flex-wrap: wrap; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra suave */
+        }
+        nav a { 
+            color: #333; /* Texto escuro */
+            text-decoration: none; padding: 10px 15px; font-weight: bold; 
+        }
+        nav a:hover { 
+            background-color: #eee; /* Fundo cinza claro no hover */
+            border-radius: 4px;
+        }
+        /* Link Sair mantém vermelho */
+        nav a[href="{{ url_for('logout') }}"] { color: #FF0000; } 
+
+
+        /* --- AVISOS (MURAL - Claro) --- */
+        .aviso { 
+            border: 1px solid #ddd; /* Borda clara */
+            padding: 15px; margin-bottom: 15px; border-radius: 5px; 
+            background: #f9f9f9; /* Fundo quase branco */
+            color: #333; /* Texto escuro */
+        }
+        .aviso h2 { margin: 0 0 10px 0; color: #FF0000; }
+        .aviso small { color: #777; font-family: sans-serif; }
+        .aviso p { white-space: pre-wrap; line-height: 1.5; }
+        .aviso hr { border-color: #eee; /* Linha clara */ } 
+        
+        /* --- BIRTHDAY BOX (Claro) --- */
+        .birthday-box {
+            background: #fff; /* Fundo branco */
+            border: 2px solid #FF0000; border-radius: 8px;
+            padding: 15px 20px; text-align: center; margin-bottom: 25px; 
+        }
+        .birthday-box h2 { margin: 0 0 10px 0; color: #333; font-size: 1.5em; }
+        .birthday-box p { font-size: 1.2em; color: #333; margin: 5px 0; }
+
+        /* --- FORMULÁRIOS E BOTÕES (Claro) --- */
+        form label { display: block; margin-top: 10px; font-weight: bold; color: #333; /* Texto escuro */ }
+        form input[type="text"], 
+        form input[type="date"], 
+        form input[type="password"], 
+        form textarea, 
+        form select { 
+            width: 98%; padding: 8px; margin-top: 5px; 
+            border: 1px solid #ccc; /* Borda cinza clara */
+            border-radius: 4px; 
+            background-color: #fff; /* Fundo branco */
+            color: #333; /* Texto escuro */
+            font-family: "Orbitron", sans-serif;
+        }
+        form button { 
+            background-color: #FF0000; color: white; padding: 10px 15px; border: none; 
+            border-radius: 4px; cursor: pointer; margin-top: 15px; transition: background-color 0.3s ease; 
+            font-family: "Orbitron", sans-serif; font-weight: bold; letter-spacing: 0.5px; 
+        }
+        form button:hover { background-color: #CC0000; }
+        form.delete-form { margin: 0; }
+        form button.delete { background-color: #dc3545; margin-top: 0; padding: 5px 10px; font-size: 0.9em; }
+        form button.delete:hover { background-color: #c82333; }
+
+        
+        /* --- ESTILO DE TABELAS (Claro) --- */
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th {
+            background-color: #f2f2f2; /* Fundo cinza claro */
+            color: #333; /* Texto escuro */
+            padding: 12px 15px; text-align: left; 
+            border-bottom: 2px solid #FF0000; 
+        }
+        td {
+            padding: 10px 15px; text-align: left; 
+            border-bottom: 1px solid #eee; /* Borda cinza clara */
+            color: #333; /* Texto escuro */
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        table:not(.calendar-table) tbody tr:hover { 
+            background-color: #f9f9f9; /* Hover cinza bem claro */
+        }
+
+        /* --- ESTILOS DO CALENDÁRIO (Claro com Botões Pretos) --- */
+        .calendar-nav { /* Mantém vermelho */
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            background-color: #CC0000; padding: 10px 15px; border-radius: 8px 8px 0 0; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .calendar-nav h1 { margin: 0; font-size: 1.5em; color: #000000; font-family: sans-serif; } 
+        
+        /* BOTÕES ANTERIOR/PRÓXIMO (MUDADO) */
+        .calendar-nav a {
+            text-decoration: none; padding: 8px 12px; 
+            background-color: #000000; /* MUDADO: Fundo Preto */
+            color: #FFFFFF; /* MUDADO: Texto Branco */
+            border-radius: 4px; font-weight: bold; transition: background-color 0.3s ease;
+            font-family: sans-serif; 
+        }
+        .calendar-nav a:hover { 
+            background-color: #333; /* MUDADO: Cinza escuro no hover */
+        }
+        
+        .calendar-nav-current { /* Mantém vermelho */
+            text-align: center; margin-top: -15px; margin-bottom: 20px;
+            background-color: #CC0000; padding-bottom: 10px; border-radius: 0 0 8px 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .calendar-nav-current a {
+            color: #FFFFFF; text-decoration: none; font-weight: bold;
+            padding: 5px 10px; display: inline-block; transition: color 0.3s ease;
+            font-family: sans-serif; 
+        }
+        .calendar-nav-current a:hover { color: #eee; }
+        
+        .calendar-table {
+            width: 100%; border-collapse: collapse; table-layout: fixed; 
+            border: 1px solid #ddd; /* Borda clara */ 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra mais sutil */
+        }
+        .calendar-table th {
+            text-align: center; padding: 10px; 
+            background-color: #f9f9f9; /* Fundo cinza claro */
+            color: #555; /* Texto escuro */
+            font-weight: bold; 
+            border-bottom: 1px solid #ddd; /* Borda clara */
+            border-right: 1px solid #ddd; 
+        }
+        .calendar-table th:last-child { border-right: none; }
+        
+        .calendar-day {
+            background-color: #fff; /* Fundo branco */
+            border: 1px solid #eee; /* Borda clara */ 
+            height: 120px; vertical-align: top; padding: 5px; 
+            position: relative; transition: background-color 0.2s ease;
+        }
+        .calendar-day:hover { background-color: #fcfcfc; }
+        .calendar-day.blank { background-color: #fdfdfd; } /* Quase branco */
+        .calendar-day.blank:hover { background-color: #fdfdfd; }
+        
+        .day-number { font-size: 1.2em; font-weight: bold; color: #555; /* Texto escuro */ }
+        .calendar-day.hoje .day-number {
+            background-color: #FF0000; color: white; border-radius: 50%;
+            width: 28px; height: 28px; display: inline-block;
+            text-align: center; line-height: 28px;
+        }
+        
+        .event {
+            font-size: 0.8em; padding: 3px 5px; border-radius: 3px; margin-top: 5px;
+            display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-family: sans-serif;
+        }
+        .event.feriado { 
+            background-color: #f8d7da; /* Fundo vermelho claro */
+            color: #721c24; /* Texto vermelho escuro */
+            font-weight: bold; 
+        }
+        .event.aniversario { 
+            background-color: #d1ecf1; /* Fundo azul claro */
+            color: #0c5460; /* Texto azul escuro */
+        }
+        
+        /* --- ESTILOS FLASH (Claro) --- */
+        .flash { padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        .flash.success { 
+            background-color: #d4edda; /* Fundo verde claro */
+            color: #155724; /* Texto verde escuro */
+            border: 1px solid #c3e6cb; 
+        }
+        .flash.danger { 
+            background-color: #f8d7da; /* Fundo vermelho claro */
+            color: #721c24; /* Texto vermelho escuro */
+            border: 1px solid #f5c6cb; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='img/logo_asp.png') }}" alt="Logo ASP Autopeças" class="logo">
+    </header>
+    
+    <nav>
+        <a href="{{ url_for('index') }}">Ver Avisos</a>
+        <a href="{{ url_for('ver_escala') }}">Ver Escala</a>
+        <a href="{{ url_for('calendario') }}">Ver Calendário</a>
+        
+        {% if current_user.is_authenticated and current_user.role == 'admin' %}
+            <a href="{{ url_for('admin_panel') }}">Admin: Funcionários</a>
+            <a href="{{ url_for('admin_escala') }}">Admin: Escala</a>
+            <a href="{{ url_for('admin_calendario') }}">Admin: Calendário</a>
+            <a href="{{ url_for('novo_aviso') }}">Admin: Novo Aviso</a>
+        {% endif %}
+        
+        <a href="{{ url_for('logout') }}" style="color: #FF0000;">Sair ({{ current_user.username }})</a>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("{{ url_for('service_worker') }}")
+            .then(function(registration) {
+                console.log('Service Worker registrado com sucesso:', registration);
+            })
+            .catch(function(error) {
+                console.log('Falha ao registrar Service Worker:', error);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Painel Admin - Funcionários{% endblock %}
+
+{% block content %}
+    <h1>Gerenciar Funcionários</h1>
+    <a href="{{ url_for('novo_funcionario') }}">Cadastrar Novo Funcionário</a>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Setor</th>
+                <th>Data de Nascimento</th>
+                <th>Ação</th> </tr>
+        </thead>
+        <tbody>
+            {% for func in funcionarios %}
+            <tr>
+                <td>{{ func.id }}</td>
+                <td>{{ func.nome }}</td>
+                <td>{{ func.setor }}</td>
+                <td>{{ func.data_nascimento.strftime('%d/%m/%Y') }}</td>
+                
+                <td>
+                    <form action="{{ url_for('delete_funcionario', id=func.id) }}" method="POST" class="delete-form">
+                        <button type="submit" class="delete"
+                                onclick="return confirm('Tem certeza que deseja deletar {{ func.nome }}? Esta ação não pode ser desfeita.');">
+                            Deletar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">Nenhum funcionário cadastrado.</td> </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
