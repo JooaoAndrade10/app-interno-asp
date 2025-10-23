@@ -6,21 +6,28 @@ Este é um aplicativo web interno desenvolvido em Flask (Python) para a ASP Auto
 
 ## Funcionalidades Principais
 
-* **Quadro de Avisos:** O administrador (Dono) pode postar comunicados importantes que são exibidos na página inicial para todos os funcionários logados.
-* **Gerenciamento de Funcionários:** O admin pode cadastrar, visualizar e excluir funcionários, definindo seus dados básicos, setor (Escritório/Expedição) e informações de login.
-* **Escala de Limpeza:** O admin pode definir uma escala de limpeza diária, designando um funcionário do Escritório e um da Expedição para a tarefa. A escala é visível para todos os funcionários.
+* **Quadro de Avisos:** O administrador (Dono) pode postar comunicados importantes que são exibidos na página inicial para todos os funcionários logados. O admin também pode excluir avisos antigos.
+* **Gerenciamento de Funcionários:** O admin pode cadastrar, visualizar e excluir funcionários, definindo seus dados básicos, setor (Escritório/Expedição), informações de login, grupo de sábado alternado (A/B) e se possui horário de entrada especial (09:00).
+* **Escala de Limpeza:** O admin pode definir e excluir uma escala de limpeza diária, designando um funcionário do Escritório e um da Expedição. A escala é visível para todos os funcionários.
 * **Calendário Interativo:**
     * Exibe um calendário mensal navegável.
     * Destaca feriados cadastrados pelo admin.
     * Destaca automaticamente os aniversários dos funcionários cadastrados.
     * O admin pode cadastrar e excluir feriados.
 * **Aniversariante do Dia:** A página inicial exibe um destaque especial parabenizando os funcionários que fazem aniversário no dia atual.
+* **Sistema de Ponto (Banco de Horas):**
+    * Funcionários podem registrar facilmente a entrada e saída.
+    * A página `/ponto` mostra o status atual (trabalhando/fora) e o botão correspondente.
+    * O sistema calcula automaticamente as horas *esperadas* para cada dia, considerando a complexa escala de sábados alternados (Grupos A/B), horários de entrada/saída variáveis, feriados e horário especial (09:00).
+    * **Visão do Admin:** Na página `/ponto`, o admin vê o seu próprio histórico detalhado com horas trabalhadas, esperadas, saldo do dia e saldo acumulado (últimos 30 dias).
+    * **Página Admin de Ponto (`/admin/ponto`):** O admin pode visualizar um resumo diário dos registros de ponto de *todos* os funcionários, com filtros por nome e intervalo de datas. Inclui cálculo de horas trabalhadas, esperadas e saldo diário para cada funcionário/dia.
+    * **Gerenciamento Admin:** O admin pode Adicionar, Editar e Excluir registros de ponto manualmente para correções.
 * **Sistema de Login:**
     * Todos os acessos exigem login (usuário e senha).
     * Controle de acesso baseado em papéis:
         * **Admin (Dono):** Acesso total, incluindo todas as funcionalidades de gerenciamento (`/admin/...`).
-        * **User (Funcionário):** Acesso apenas às páginas de visualização (Avisos, Escala, Calendário).
-* **Design Personalizado:** Tema claro com as cores da marca ASP Autopeças (branco, preto, vermelho) e fonte Orbitron.
+        * **User (Funcionário):** Acesso apenas às páginas de visualização (Avisos, Ponto (sem detalhes), Escala, Calendário).
+* **Design Personalizado:** Tema claro com as cores da marca ASP Autopeças (branco, preto, vermelho), fonte Orbitron, logo e favicon.
 * **Instalável (PWA):** Pode ser adicionado à tela inicial de celulares (Android/iOS) para acesso rápido, funcionando como um aplicativo.
 
 ## Tecnologias Utilizadas
@@ -30,21 +37,21 @@ Este é um aplicativo web interno desenvolvido em Flask (Python) para a ASP Auto
 * **Banco de Dados:** SQLite
 * **Autenticação:** Flask-Login
 * **ORM:** Flask-SQLAlchemy
-* **Frontend:** HTML, CSS (sem framework CSS externo)
-* **Servidor de Desenvolvimento:** Werkzeug (embutido no Flask)
+* **Frontend:** HTML, CSS (puro)
+* **Servidor de Desenvolvimento:** Werkzeug (Flask)
 
 ## Configuração e Execução Local
 
 **Pré-requisitos:**
 * Python 3 instalado
-* Git (opcional, para clonar)
+* Git instalado
 
 **Passos:**
 
-1.  **Clone o repositório (ou copie os arquivos):**
+1.  **Clone o repositório:**
     ```bash
-    git clone <URL_DO_SEU_REPOSITÓRIO>
-    cd AppInterno
+    git clone [https://github.com/JooaoAndrade10/app-interno-asp.git](https://github.com/JooaoAndrade10/app-interno-asp.git)
+    cd app-interno-asp
     ```
 
 2.  **Crie e ative um ambiente virtual:**
@@ -63,7 +70,7 @@ Este é um aplicativo web interno desenvolvido em Flask (Python) para a ASP Auto
     pip install -r requirements.txt
     ```
 
-4.  **Crie o Banco de Dados:**
+4.  **Crie o Banco de Dados:** *(Execute sempre que a estrutura dos modelos no `app.py` for alterada! Apaga dados existentes.)*
     ```bash
     # Windows (PowerShell)
     $env:FLASK_APP = "app.py" 
@@ -74,23 +81,20 @@ Este é um aplicativo web interno desenvolvido em Flask (Python) para a ASP Auto
     flask init-db
     ```
 
-5.  **Crie a conta de Administrador (Dono):**
+5.  **Crie a conta de Administrador (Dono):** *(Execute após `init-db` pela primeira vez ou se o BD for recriado).*
     ```bash
     flask create-admin 
     ```
-    *(Siga as instruções no terminal para definir usuário, senha, etc.)*
+    *(Siga as instruções no terminal para definir usuário, senha, nome, setor, data nasc., grupo sábado, horário especial).*
 
 6.  **Execute o aplicativo:**
     ```bash
-    # Para rodar apenas no seu PC:
-    flask run --debug
-
     # Para rodar e permitir acesso pela rede local (celulares):
     flask run --debug --host=0.0.0.0 
     ```
 
 7.  **Acesse:**
     * No seu PC: `http://127.0.0.1:5000`
-    * Em outros dispositivos na mesma rede: `http://<IP_DO_SEU_PC>:5000` (Encontre o IP com `ipconfig` no Windows ou `ifconfig`/`ip a` no Linux/macOS).
+    * Em outros dispositivos na mesma rede: `http://<IP_DO_SEU_PC>:5000` (Encontre o IP com `ipconfig` no Windows).
 
 ## Estrutura do Projeto
