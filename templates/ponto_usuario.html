@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Ponto{% endblock %}
+
+{% block content %}
+    <h1>Registro de Ponto</h1>
+
+    <div class="ponto-status-box">
+        <h2>Status Atual: {{ status_atual }}</h2>
+        
+        <form action="{{ url_for('registrar_ponto') }}" method="POST">
+            <button type="submit" class="ponto-button {{ botao_classe }}">
+                {{ botao_texto }}
+            </button>
+        </form>
+    </div>
+
+    {# ========================================================== #}
+    {# BLOCO ABAIXO VISÍVEL APENAS PARA O ADMIN (DONO)            #}
+    {# ========================================================== #}
+    {% if current_user.role == 'admin' %}
+
+        <div class="saldo-total-box">
+            <h3>Meu Saldo Total (Últimos 30 dias): 
+                <span style="color: {% if saldo_total.total_seconds() >= 0 %}#28a745{% else %}#dc3545{% endif %}; font-weight: bold;">
+                    {{ saldo_total | format_timedelta }}
+                </span>
+            </h3>
+            <small>(Positivo = Horas extras / Negativo = Horas devendo)</small>
+        </div>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        <h2>Meu Histórico (Últimos 30 dias)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Registros (Entrada - Saída)</th>
+                    <th>Trabalhado</th>
+                    <th>Esperado</th>
+                    <th>Saldo Dia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dia in historico %}
+                <tr>
+                    <td>{{ dia.data }}</td>
+                    <td>{{ dia.registros | safe }}</td>
+                    <td>{{ dia.trabalhado | format_timedelta }}</td>
+                    <td>{{ dia.esperado | format_timedelta }}</td>
+                    <td style="color: {% if dia.saldo_dia.total_seconds() >= 0 %}#28a745{% else %}#dc3545{% endif %}; font-weight: bold;">
+                        {{ dia.saldo_dia | format_timedelta }}
+                    </td> 
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">Nenhum registro encontrado nos últimos 30 dias.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %} {# Fim do bloco if admin #}
+    {# ========================================================== #}
+
+{% endblock %}

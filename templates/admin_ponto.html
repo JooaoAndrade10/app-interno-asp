@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Resumo de Ponto{% endblock %}
+
+{% block content %}
+    <h1>Admin - Resumo de Ponto por Dia</h1>
+
+    <form method="GET" action="{{ url_for('admin_ponto') }}" class="filter-form">
+        <div class="filter-controls">
+            <div>
+                <label for="funcionario_id">Filtrar por Funcionário:</label>
+                <select name="funcionario_id" id="funcionario_id">
+                    <option value="">-- Todos --</option>
+                    {% for func in funcionarios %}
+                        <option value="{{ func.id }}" {% if func.id == selected_funcionario_id %}selected{% endif %}>
+                            {{ func.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="start_date">Data Inicial:</label>
+                <input type="date" name="start_date" id="start_date" value="{{ start_date or '' }}">
+            </div>
+            <div>
+                <label for="end_date">Data Final:</label>
+                <input type="date" name="end_date" id="end_date" value="{{ end_date or '' }}">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button type="submit" class="filter-button">Filtrar</button>
+            <a href="{{ url_for('admin_ponto') }}" class="clear-filter-button">Limpar Filtros</a>
+            <a href="{{ url_for('add_ponto_manual') }}" class="add-button">Adicionar Registro</a>
+        </div>
+    </form>
+    
+    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Funcionário</th>
+                <th>Data</th>
+                <th>Registros (Entrada - Saída) [Ações]</th>
+                <th>Trabalhado</th>
+                <th>Esperado</th>
+                <th>Saldo Dia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for funcionario_data in resumo_admin %}
+                {% for dia_data in funcionario_data.resumo_dias %}
+                <tr>
+                    <td>{{ funcionario_data.nome_funcionario }}</td>
+                    <td>{{ dia_data.data_str }}</td>
+                    <td>{{ dia_data.registros_str_html | safe }}</td> {# Contém os registros e botões E/X #}
+                    <td>{{ dia_data.trabalhado | format_timedelta }}</td>
+                    <td>{{ dia_data.esperado | format_timedelta }}</td>
+                    <td style="color: {% if dia_data.saldo_dia.total_seconds() >= 0 %}#28a745{% else %}#dc3545{% endif %}; font-weight: bold;">
+                        {{ dia_data.saldo_dia | format_timedelta }}
+                    </td>
+                </tr>
+                {% endfor %} {# Fim loop dias #}
+            {% else %}
+            <tr>
+                <td colspan="6">Nenhum registro de ponto encontrado {% if selected_funcionario_id or start_date or end_date %}com os filtros aplicados{% endif %}.</td>
+            </tr>
+            {% endfor %} {# Fim loop funcionários #}
+        </tbody>
+    </table>
+
+{% endblock %}

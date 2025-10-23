@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{# O título muda se estamos editando ou adicionando #}
+{% block title %}{% if registro %}Editar{% else %}Adicionar{% endif %} Registro de Ponto{% endblock %}
+
+{% block content %}
+    <h1>{% if registro %}Editar{% else %}Adicionar{% endif %} Registro de Ponto Manualmente</h1>
+
+    {# O action do formulário muda se estamos editando ou adicionando #}
+    <form method="POST" action="{% if registro %}{{ url_for('edit_ponto_manual', id=registro.id) }}{% else %}{{ url_for('add_ponto_manual') }}{% endif %}">
+        
+        <label for="funcionario_id">Funcionário:</label>
+        <select name="funcionario_id" id="funcionario_id" required>
+            <option value="">-- Selecione --</option>
+            {% for func in funcionarios %}
+                {# Seleciona o funcionário correto se estiver editando ou se houve erro no form #}
+                <option value="{{ func.id }}" 
+                        {% if (registro and func.id == registro.funcionario_id) or (form_data.funcionario_id and func.id == form_data.funcionario_id|int) %}selected{% endif %}>
+                    {{ func.nome }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="data">Data:</label>
+        {# Usa 'form_data' para repopular em caso de erro #}
+        <input type="date" name="data" id="data" value="{{ form_data.data or '' }}" required>
+
+        <label for="entrada">Hora de Entrada (HH:MM):</label>
+        <input type="time" name="entrada" id="entrada" value="{{ form_data.entrada or '' }}" required>
+        
+        <label for="saida">Hora de Saída (HH:MM - opcional):</label>
+        <input type="time" name="saida" id="saida" value="{{ form_data.saida or '' }}">
+        <small style="display: block; margin-bottom: 10px; color: #777;">Deixe em branco se o registro ainda estiver em aberto.</small>
+
+
+        <label for="observacao">Observação (opcional):</label>
+        <textarea name="observacao" id="observacao" rows="3">{{ form_data.observacao or '' }}</textarea>
+
+        <button type="submit">Salvar Registro</button>
+        {# Link para cancelar e voltar #}
+        <a href="{{ url_for('admin_ponto') }}" style="margin-left: 15px; color: #6c757d;">Cancelar</a>
+    </form>
+
+{% endblock %}

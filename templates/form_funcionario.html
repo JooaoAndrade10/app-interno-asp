@@ -19,7 +19,7 @@
             <option value="admin">Administrador (Dono)</option>
         </select>
         
-        <hr style="margin: 30px 0; border-color: #444;">
+        <hr style="margin: 30px 0; border-color: #eee;">
         
         <h2>Dados Pessoais</h2>
         <label for="nome">Nome Completo:</label>
@@ -35,6 +35,24 @@
         <label for="data_nascimento">Data de Nascimento:</label>
         <input type="date" id="data_nascimento" name="data_nascimento" required>
 
+        <hr style="margin: 30px 0; border-color: #eee;">
+
+        <h2>Configuração de Horário</h2>
+        
+        <label for="grupo_sabado">Grupo de Sábado Alternado:</label>
+        <select id="grupo_sabado" name="grupo_sabado">
+            <option value="">Nenhum (Não trabalha aos sábados)</option>
+            <option value="A">Grupo A</option>
+            <option value="B">Grupo B</option>
+        </select>
+        <small style="display: block; margin-bottom: 10px; color: #777;">Define qual sábado o funcionário trabalha (semanas A/B).</small>
+
+        <label for="horario_especial_09">Horário de Entrada Especial:</label>
+        <select id="horario_especial_09" name="horario_especial_09" required>
+            <option value="False">Padrão (08:00)</option>
+            <option value="True">Especial (09:00 - Exp.)</option>
+        </select>
+        <small style="display: block; margin-bottom: 10px; color: #777;">Indica se o funcionário entra às 09:00 (Expedição).</small>
         <button type="submit">Salvar Funcionário</button>
     </form>
 {% endblock %}
